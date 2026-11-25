@@ -13,6 +13,7 @@ class Booking extends Model
 
     /**
      * The attributes that are mass assignable.
+     * Note: 'status' is excluded to prevent arbitrary status modification via mass assignment.
      *
      * @var list<string>
      */
@@ -22,7 +23,6 @@ class Booking extends Model
         'schedule_id',
         'total_passengers',
         'total_amount',
-        'status',
         'payment_deadline',
         'notes',
     ];
@@ -39,6 +39,42 @@ class Booking extends Model
             'total_amount' => 'decimal:2',
             'payment_deadline' => 'datetime',
         ];
+    }
+
+    /**
+     * Mark booking as waiting for admin verification.
+     */
+    public function markAsWaitingVerification(): void
+    {
+        $this->status = 'waiting_verification';
+        $this->save();
+    }
+
+    /**
+     * Mark booking as confirmed.
+     */
+    public function markAsConfirmed(): void
+    {
+        $this->status = 'confirmed';
+        $this->save();
+    }
+
+    /**
+     * Mark booking as cancelled.
+     */
+    public function markAsCancelled(): void
+    {
+        $this->status = 'cancelled';
+        $this->save();
+    }
+
+    /**
+     * Mark booking as expired.
+     */
+    public function markAsExpired(): void
+    {
+        $this->status = 'expired';
+        $this->save();
     }
 
     /**

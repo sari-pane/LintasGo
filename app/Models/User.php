@@ -16,6 +16,7 @@ class User extends Authenticatable
 
     /**
      * The attributes that are mass assignable.
+     * Note: 'role' is intentionally excluded to prevent privilege escalation via mass assignment.
      *
      * @var list<string>
      */
@@ -24,7 +25,6 @@ class User extends Authenticatable
         'email',
         'google_id',
         'password',
-        'role',
         'phone',
     ];
 
@@ -65,6 +65,15 @@ class User extends Authenticatable
     public function isPassenger(): bool
     {
         return $this->role === 'passenger';
+    }
+
+    /**
+     * Explicitly assign a role through a controlled backend process.
+     */
+    public function assignRole(string $role): void
+    {
+        $this->role = $role;
+        $this->save();
     }
 
     /**

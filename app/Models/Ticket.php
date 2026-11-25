@@ -12,6 +12,7 @@ class Ticket extends Model
 
     /**
      * The attributes that are mass assignable.
+     * Note: 'status', 'checked_in_by', and 'checked_in_at' are excluded to prevent unauthorized ticket validation via mass assignment.
      *
      * @var list<string>
      */
@@ -19,9 +20,6 @@ class Ticket extends Model
         'booking_seat_id',
         'ticket_code',
         'qr_code_identifier',
-        'status',
-        'checked_in_at',
-        'checked_in_by',
     ];
 
     /**
@@ -34,6 +32,26 @@ class Ticket extends Model
         return [
             'checked_in_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Perform ticket check-in through authorized admin process.
+     */
+    public function checkIn(int $adminId): void
+    {
+        $this->status = 'checked_in';
+        $this->checked_in_by = $adminId;
+        $this->checked_in_at = now();
+        $this->save();
+    }
+
+    /**
+     * Cancel the ticket.
+     */
+    public function cancel(): void
+    {
+        $this->status = 'cancelled';
+        $this->save();
     }
 
     /**

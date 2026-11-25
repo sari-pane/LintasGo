@@ -13,6 +13,7 @@ class BookingSeat extends Model
 
     /**
      * The attributes that are mass assignable.
+     * Note: 'active_seat_key' is excluded to protect the database-level double booking prevention mechanism.
      *
      * @var list<string>
      */
@@ -22,8 +23,24 @@ class BookingSeat extends Model
         'seat_id',
         'passenger_name',
         'passenger_phone',
-        'active_seat_key',
     ];
+
+    /**
+     * Generate and set the unique active seat key.
+     */
+    public function allocateSeatKey(): void
+    {
+        $this->active_seat_key = "{$this->schedule_id}-{$this->seat_id}";
+    }
+
+    /**
+     * Release the active seat key to free the seat in MySQL unique index.
+     */
+    public function releaseSeatKey(): void
+    {
+        $this->active_seat_key = null;
+        $this->save();
+    }
 
     /**
      * Get the parent booking.
