@@ -108,4 +108,12 @@ class Booking extends Model
     {
         return $this->hasMany(Payment::class, 'booking_id');
     }
+
+    /**
+     * Get all tickets issued under this booking via booking seats.
+     */
+    public function tickets(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->hasManyThrough(Ticket::class, BookingSeat::class, 'booking_id', 'booking_seat_id');
+    }
 }

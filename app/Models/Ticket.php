@@ -69,4 +69,12 @@ class Ticket extends Model
     {
         return $this->belongsTo(User::class, 'checked_in_by');
     }
+
+    /**
+     * Alias for checkedInBy.
+     */
+    public function checker(): BelongsTo
+    {
+        return $this->checkedInBy();
+    }
 }
