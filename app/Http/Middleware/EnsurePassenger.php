@@ -20,7 +20,7 @@ class EnsurePassenger
                 return response()->json(['message' => 'Unauthenticated.'], 401);
             }
 
-            return redirect()->guest('/auth/login')->with('error', 'Silakan login terlebih dahulu untuk melanjutkan pemesanan.');
+            return redirect()->guest('/login')->with('error', 'Silakan login terlebih dahulu untuk melanjutkan pemesanan.');
         }
 
         if (! $request->user()->isPassenger()) {
