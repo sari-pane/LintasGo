@@ -128,7 +128,7 @@ class BackendIntegrationTest extends TestCase
             'password_confirmation' => 'citrasecret123',
         ]);
 
-        $regResponse->assertRedirect('/passenger/dashboard');
+        $regResponse->assertRedirect('/jadwal');
         $this->assertAuthenticated();
 
         $user = User::where('email', 'citra@example.com')->first();
@@ -137,7 +137,7 @@ class BackendIntegrationTest extends TestCase
 
         // Logout
         $logoutResponse = $this->post('/logout');
-        $logoutResponse->assertRedirect('/login');
+        $logoutResponse->assertRedirect('/');
         $this->assertGuest();
 
         // Login again
@@ -145,7 +145,7 @@ class BackendIntegrationTest extends TestCase
             'email' => 'citra@example.com',
             'password' => 'citrasecret123',
         ]);
-        $loginResponse->assertRedirect('/passenger/dashboard');
+        $loginResponse->assertRedirect('/jadwal');
         $this->assertAuthenticatedAs($user);
     }
 

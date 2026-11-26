@@ -45,4 +45,39 @@ class Route extends Model
     {
         return $this->hasMany(Schedule::class, 'route_id');
     }
+
+    /**
+     * Alias accessor for origin_city.
+     */
+    public function getOriginCityAttribute(): string
+    {
+        return $this->origin;
+    }
+
+    /**
+     * Alias accessor for destination_city.
+     */
+    public function getDestinationCityAttribute(): string
+    {
+        return $this->destination;
+    }
+
+    /**
+     * Formatted estimated travel duration label.
+     */
+    public function getEstimatedDurationAttribute(): string
+    {
+        $minutes = (int) $this->estimated_duration_minutes;
+        $hours = intdiv($minutes, 60);
+        $mins = $minutes % 60;
+
+        if ($hours > 0 && $mins > 0) {
+            return "± {$hours} Jam {$mins} Menit";
+        }
+        if ($hours > 0) {
+            return "± {$hours} Jam";
+        }
+
+        return "± {$mins} Menit";
+    }
 }

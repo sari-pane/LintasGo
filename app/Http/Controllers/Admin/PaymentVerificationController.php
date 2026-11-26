@@ -28,9 +28,9 @@ class PaymentVerificationController extends Controller
             ->with(['booking.user', 'booking.schedule.route', 'booking.schedule.vehicle'])
             ->latest();
 
-        if ($request->filled('status')) {
+        if ($request->filled('status') && $request->status !== 'all') {
             $query->where('status', $request->status);
-        } else {
+        } elseif (! $request->filled('status')) {
             // Default show pending verification first
             $query->where('status', 'pending_verification');
         }

@@ -110,6 +110,14 @@ class Booking extends Model
     }
 
     /**
+     * Get the latest payment attempt for this booking.
+     */
+    public function latestPayment(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Payment::class, 'booking_id')->latestOfMany('attempt_number');
+    }
+
+    /**
      * Get all tickets issued under this booking via booking seats.
      */
     public function tickets(): \Illuminate\Database\Eloquent\Relations\HasManyThrough

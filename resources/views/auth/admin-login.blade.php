@@ -1,69 +1,55 @@
 @extends('layouts.auth')
 
-@section('title', 'Login Administrator - LintasGo')
+@section('title', 'Login Administrator — LintasGo')
 
-@section('content')
-    <div style="text-align: center; margin-bottom: 12px;">
-        <span class="admin-badge">Portal Khusus Internal</span>
+@section('auth-content')
+    <div class="text-center mb-3">
+        <span class="inline-block px-3 py-1 rounded-full bg-ink/10 text-ink text-[10px] font-bold uppercase tracking-wider">Portal Khusus Internal</span>
+        <h2 class="font-display text-2xl text-ink mt-2">Login Administrator</h2>
     </div>
-    <h2 class="card-title" style="text-align: center;">Login Administrator</h2>
 
     @if (session('success'))
-        <div class="alert alert-success">
+        <div class="mb-4 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
             {{ session('success') }}
         </div>
     @endif
 
     @if (session('error'))
-        <div class="alert alert-danger">
+        <div class="mb-4 p-3 rounded-2xl bg-red-50 border border-vred/30 text-vred text-xs font-semibold">
             {{ session('error') }}
         </div>
     @endif
 
-    <form method="POST" action="{{ route('admin.login.attempt') }}">
+    <form method="POST" action="{{ route('admin.login.attempt') }}" class="space-y-4">
         @csrf
 
-        <div class="form-group">
-            <label for="email">Email Administrator</label>
-            <input 
-                id="email" 
-                type="email" 
-                name="email" 
-                value="{{ old('email') }}" 
-                class="form-control @error('email') is-invalid @enderror" 
-                required 
-                autofocus
-            >
+        <div>
+            <label for="email" class="block text-xs font-semibold text-ink mb-1">Email Administrator</label>
+            <input id="email" type="email" name="email" value="{{ old('email') }}" class="w-full px-4 py-2.5 rounded-2xl bg-white border @error('email') border-vred @else border-gold/40 @enderror text-sm text-ink focus:outline-none focus:border-maroon" required autofocus>
             @error('email')
-                <div class="invalid-feedback">{{ $message }}</div>
+                <p class="text-xs text-vred mt-1">{{ $message }}</p>
             @enderror
         </div>
 
-        <div class="form-group">
-            <label for="password">Password</label>
-            <input 
-                id="password" 
-                type="password" 
-                name="password" 
-                class="form-control @error('password') is-invalid @enderror" 
-                required
-            >
+        <div>
+            <label for="password" class="block text-xs font-semibold text-ink mb-1">Password</label>
+            <input id="password" type="password" name="password" class="w-full px-4 py-2.5 rounded-2xl bg-white border @error('password') border-vred @else border-gold/40 @enderror text-sm text-ink focus:outline-none focus:border-maroon" required>
             @error('password')
-                <div class="invalid-feedback">{{ $message }}</div>
+                <p class="text-xs text-vred mt-1">{{ $message }}</p>
             @enderror
         </div>
 
-        <div class="form-check">
-            <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-            <label for="remember">Ingat sesi ini</label>
-        </div>
+        <label class="flex items-center gap-2 text-xs text-ink/75 cursor-pointer">
+            <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }} class="rounded border-gold/40 text-maroon focus:ring-maroon">
+            <span>Ingat sesi ini</span>
+        </label>
 
-        <button type="submit" class="btn-submit" style="background-color: #0f172a;">
+        <button type="submit" class="w-full py-3 rounded-2xl bg-ink hover:bg-maroon text-cream font-semibold text-sm shadow-lg transition cursor-pointer">
             Masuk ke Portal Operasional
         </button>
     </form>
 @endsection
 
 @section('footer-links')
-    <p><a href="{{ route('login') }}" style="color: var(--text-muted);">&larr; Kembali ke Portal Penumpang</a></p>
+    <p><a href="{{ route('login') }}" class="font-semibold text-ink/75 hover:text-maroon">← Kembali ke Portal Penumpang</a></p>
 @endsection
