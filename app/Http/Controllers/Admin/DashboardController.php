@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\BookingSeat;
 use App\Models\Payment;
 use App\Models\Schedule;
 use App\Models\Ticket;
@@ -29,7 +30,7 @@ class DashboardController extends Controller
 
         $recentPendingPayments = Payment::query()
             ->where('status', 'pending_verification')
-            ->with(['booking.user', 'booking.schedule.route'])
+            ->with(['booking.user', 'booking.schedule.route', 'booking.bookingSeats.seat'])
             ->latest()
             ->limit(5)
             ->get();
@@ -37,6 +38,7 @@ class DashboardController extends Controller
         $upcomingSchedules = Schedule::query()
             ->where('departure_time', '>=', now('Asia/Jakarta'))
             ->with(['route', 'vehicle', 'driver'])
+            ->withCount(['bookingSeats as occupied_seats_count' => fn ($q) => $q->whereNotNull('active_seat_key')])
             ->orderBy('departure_time', 'asc')
             ->limit(5)
             ->get();
@@ -50,6 +52,23 @@ class DashboardController extends Controller
             ]);
         }
 
-        return view('admin.dashboard', compact('metrics', 'recentPendingPayments', 'upcomingSchedules'));
+        $manifestEntries = BookingSeat::query()
+            ->whereNotNull('active_seat_key')
+            ->with(['seat', 'booking.schedule.route', 'booking.user', 'ticket'])
+            ->latest()
+            ->limit(8)
+            ->get();
+
+        $totalCap = $upcomingSchedules->sum(fn ($s) => $s->vehicle->total_seats ?? 0);
+        $totalOcc = $upcomingSchedules->sum('occupied_seats_count');
+        $occupancyRate = $totalCap > 0 ? round(($totalOcc / $totalCap) * 100) : 0;
+
+        return view('admin.dashboard', compact(
+            'metrics',
+            'recentPendingPayments',
+            'upcomingSchedules',
+            'manifestEntries',
+            'occupancyRate'
+        ));
     }
 }

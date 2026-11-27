@@ -28,17 +28,21 @@ class PassengerAuthController extends Controller
 
             /** @var User $user */
             $user = Auth::user();
+            if ($user->role === 'admin') {
+                return redirect()->intended(route('admin.dashboard'));
+            }
+
             if ($user->role !== 'passenger') {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
 
                 return back()->withErrors([
-                    'email' => 'Akun ini bukan akun penumpang. Silakan masuk melalui portal yang sesuai.',
+                    'email' => 'Akun ini tidak memiliki peran yang valid. Silakan hubungi administrator.',
                 ]);
             }
 
-            return redirect()->intended(route('passenger.dashboard'));
+            return redirect()->intended('/jadwal');
         }
 
         return back()->withErrors([
@@ -65,7 +69,7 @@ class PassengerAuthController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('passenger.dashboard')->with('success', 'Pendaftaran berhasil. Selamat datang di LintasGo!');
+        return redirect('/jadwal')->with('success', 'Pendaftaran berhasil. Selamat datang di LintasGo!');
     }
 
     public function logout(Request $request): RedirectResponse
@@ -74,6 +78,6 @@ class PassengerAuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Anda telah berhasil keluar.');
+        return redirect('/')->with('success', 'Anda telah berhasil keluar.');
     }
 }
